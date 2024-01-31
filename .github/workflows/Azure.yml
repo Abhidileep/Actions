@@ -1,32 +1,32 @@
-name: Azure Deployment Workflow
-
+name: build_deploy_aks
 on:
   push:
-    branches:
-      - main
-
+    paths:
+      - "azure-vote/**"
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Azure CLI
-        uses: azure/login@v1
+      - name: Checkout source code 
+        uses: actions/checkout@v3
+      - name: ACR build
+        id: build-push-acr
+        uses: azure/acr-build@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure
-        run: |
-          # Your deployment commands go here
-          az group create --name MyResourceGroup --location eastus
-          az appservice plan create --name MyPlan --resource-group MyResourceGroup --sku B1
-          az webapp create --name MyWebApp --resource-group MyResourceGroup --plan MyPlan
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
+          service_principal: ${{ secrets.service_principal }}
+          service_principal_password: ${{ secrets.service_principal_password }}
+          tenant: ${{ secrets.tenant }}
+          registry: ${{ secrets.registry }}
+          repository: ${{ secrets.repository }}
+          image:  azure-vote-front
+          folder: azure-vote
+          branch: master
+          tag: ${{ github.sha }}
+      - name: Azure login
+        id: login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CLIENT_SECRET }}
+                 ${{ secrets.AZURE_CLIENT_ID }}
+                 ${{ secrets.AZURE_TENANT_ID }}
+                 ${{ secrets.AZURE_SUBSCRIPTION_ID }}

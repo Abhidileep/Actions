@@ -25,7 +25,8 @@ jobs:
           az appservice plan create --name MyPlan --resource-group MyResourceGroup --sku B1
           az webapp create --name MyWebApp --resource-group MyResourceGroup --plan MyPlan
         env:
-          AZURE_CLIENT_ID: ${{ secrets.6ae8754c-519e-4428-874e-a65f26f02f81}}
-          AZURE_TENANT_ID: ${{ secrets.2a189c0c-0d06-4083-8e46-1b2a36242afe }}
-          AZURE_CLIENT_SECRET: ${{ secrets.Elz8Q~XTxOlzRWlXuUNXF4I..fA66P2n2itnabDM }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.0b60ebf5-5bb8-4f04-866c-5185143b7328 }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+

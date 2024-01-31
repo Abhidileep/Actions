@@ -1,8 +1,8 @@
 name: Azure_Deploy
 on:
   push:
-    paths:
-      - "azure-vote/**"
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest

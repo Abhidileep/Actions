@@ -3,14 +3,27 @@ name: ci
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Print current working directory
+        run: |
+          pwd
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+      
+      - name: Checkout source code and list files
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensure all history is included in the checkout
+
+      - name: List files
+        run: |
+          ls -R
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -20,9 +33,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Checkout source code 
-        uses: actions/checkout@v3
-        
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -33,7 +44,13 @@ jobs:
         id: login
         uses: azure/login@v1.4.3
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}        
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+            }
 
       - name: Set AKS context
         id: set-context
@@ -41,20 +58,19 @@ jobs:
         with:
           resource-group: '${{ secrets.resource_group }}' 
           cluster-name: '${{ secrets.cluster_name }}'
-          
+
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
-        
+
       - name: Deploy to AKS
         id: deploy-aks
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'default'
           manifests: |
-             deployment.yaml
-             service.yaml
-             ingress.yaml
+            deployment.yaml
+            service.yaml
+            ingress.yaml
           images: 'abhidileep/actions:${{ github.sha }}'
-          pull-images: false 
-   
+          pull-images: false

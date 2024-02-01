@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: abhidileep/actions:v1.0
+          tags: abhidileep/actions:${{ github.sha }}
 
       - name: Azure login
         id: login
@@ -55,6 +55,6 @@ jobs:
              deployment.yaml
              service.yaml
              ingress.yaml
-          images: 'abhidileep/actions:v1.0:${{ github.sha }}'
+          images: 'abhidileep/actions:${{ github.sha }}'
           pull-images: false 
    

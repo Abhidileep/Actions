@@ -53,7 +53,7 @@ jobs:
           namespace: 'default'
           manifests: |
              deployment.yaml
-             services.yaml
+             service.yaml
              ingress.yaml
           images: 'abhidileep/actions:v1.0:${{ github.sha }}'
           pull-images: false 

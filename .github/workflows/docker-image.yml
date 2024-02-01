@@ -29,10 +29,9 @@ jobs:
 
       - name: Azure login
         id: login
-        uses: azure/login@v1.28.3
+        uses: azure/login@v1.4.3
         with:
           creds:  |
-            creds:  |
             {
              "client-secret": "${{ secrets.AZURE_CLIENT_SECRET }}",
              "client-id": "${{ secrets.AZURE_CLIENT_ID }}",

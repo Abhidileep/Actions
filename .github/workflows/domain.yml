@@ -1,0 +1,46 @@
+name: Automate Route 53 Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain_name:
+        description: 'Domain Name'
+        required: true
+      server_ip:
+        description: 'Server IP'
+        required: true
+
+jobs:
+  update-route53:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: Asia Pacific (Mumbai) # Replace with your AWS region
+
+      - name: Update Route 53 Records
+        run: |
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id your-hosted-zone-id \
+            --change-batch "{
+              \"Comment\": \"Automated update\",
+              \"Changes\": [
+                {
+                  \"Action\": \"UPSERT\",
+                  \"ResourceRecordSet\": {
+                    \"Name\": \"${{ github.event.inputs.domain_name }}\",
+                    \"Type\": \"A\",
+                    \"TTL\": 300,
+                    \"ResourceRecords\": [
+                      {
+                        \"Value\": \"${{ github.event.inputs.server_ip }}\"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }"

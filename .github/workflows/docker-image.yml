@@ -56,7 +56,7 @@ jobs:
         with:
           namespace: 'default'
           manifests: |
-             deplpoyments.yaml
+             deployments.yaml
              services.yaml
              ingress.yaml
           images: 'abhidileep/actions:v1.0:${{ github.sha }}'

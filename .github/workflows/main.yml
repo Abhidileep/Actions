@@ -10,12 +10,6 @@ on:
         description: 'Server IP'
         required: true
 
-env:
-  AWS_ROUTE53_RR_NAME: kamali.kubeace.com
-  AWS_ROUTE53_RR_TYPE: A
-  AWS_ROUTE53_RR_TTL: 300
-  AWS_ROUTE53_RR_VALUE: 15.191.112.197
-
 jobs:
   update-route53:
     runs-on: ubuntu-latest

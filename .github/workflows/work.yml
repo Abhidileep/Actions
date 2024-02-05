@@ -1,10 +1,18 @@
 name: Automate Route 53 Update
 
 on:
- push:
-   branches:
-    - main
-    
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      domain_name:
+        description: 'Domain Name'
+        required: true
+      server_ip:
+        description: 'Server IP'
+        required: true
+
 jobs:
   aws_route53:
     runs-on: ubuntu-latest
